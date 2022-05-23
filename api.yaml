@@ -1,0 +1,159 @@
+swagger: "2.0.0"
+info:
+  title: Tina Configurations
+  summary: Officical Zeeq Analytics for TINA
+  description: Api Documentation for Tina App Zeeq
+  version: 1.0.0
+  contact:
+    email: choudharysidharth082000@gmail.com
+  servers:
+    - url: "http://localhost:3000"
+      description: "Local Server Running"
+    - url: "https://testcyberflow.herokuapp.com"
+      description: "Main Server"
+
+schemes: [http, https]
+
+paths:
+  /v1/testApi:
+    get:
+      tags:
+        - Test
+      summary: Test Api
+      description: Return HEllo world
+      responses:
+        200:
+          description: OK
+          schema:
+            type: object
+            properties:
+              message:
+                type: string
+        400:
+          description: Undocumented
+        500:
+          description: Internal Server Error
+
+  /v1/tina/schedule/fetchTina:
+    put:
+      tags:
+        - Schedule
+      summary: Adding all the schedules to our Database
+      description: Adding Schedules to the DB
+      parameters:
+        - in: body
+          name: authToken
+          schema:
+            type: object
+            properties:
+              authToken:
+                type: string
+      responses:
+        200:
+          description: OK
+  /v1/tina/job/fetchJobs:
+    put:
+      tags:
+        - Jobs
+      summary: Fetching Jobs
+      description: Fetching all the jobs
+      parameters:
+        - in: body
+          name: authToken
+          schema:
+            type: object
+            properties:
+              authToken:
+                type: string
+      responses:
+        200:
+          description: OK
+  /v1/tina/job/fetchJobStatus/{jobType}:
+    put:
+      tags:
+        - Jobs
+      summary: Fetching Jobs with Status
+      description: Fetching all the jobs with a defined status
+      parameters:
+        - in: path
+          name: jobType
+          enum: ["Success", "Failed"]
+          type: string
+          required: true
+          description: Enter the type of job
+        - in: body
+          required: true
+          description: Provide the auth token generated in the tina swagger docs
+          name: authToken
+          schema:
+            type: object
+            properties:
+              authToken:
+                type: string
+      responses:
+        200:
+          description: OK
+  /v1/tina/job/deleteAllJobs:
+    delete:
+      tags:
+        - Jobs
+      summary: Delete all jobs
+      description: Delete All Jobs from the Database
+      responses:
+        200:
+          description: OK
+  /v1/tina/schedule/deleteAllSchedules:
+    delete:
+      tags:
+        - Schedule
+      summary: Delete all Schedules
+      description: Delete All Schedules from the database
+      responses:
+        200:
+          description: OK
+  /v1/tina/schedule/fetchSchduleByType/{scheduleType}:
+    get:
+      tags:
+        - Schedule
+      summary: Fetching Shcdules by the required Type
+      description: Fetching Shcdules by type (Daily, Monthly, Weekly)
+      parameters:
+        - name: scheduleType
+          in: path
+          type: string
+          required: true
+          enum: ["Daily","Weekly","Monthly"]
+      responses:  
+        200:
+          description: OK
+  /v1/tina/job/fetchJobType/{jobType}:
+    put:
+      tags:
+        - Jobs
+      summary: Fetching Jobs with Type
+      description: Fetching all the jobs based on there Type( Incremental Backup, Full Backup)
+      parameters:
+        - in: path
+          type: string
+          enum: ["Incr", "Full"]
+          required: true
+          name: jobType
+      responses:
+        200:
+          description: OK
+  /v1/tina/log/deleteLogs:
+    put:  
+      tags:
+        - logs
+      summary: Delete All Logs
+      description: Deleting all the Logs from out DB
+      parameters:
+        - in: query
+          type: string
+          name: authToken
+          required: true
+      responses:
+        200:
+          description: OK
+        
+    
