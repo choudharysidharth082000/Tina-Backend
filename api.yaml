@@ -33,6 +33,48 @@ paths:
           description: Undocumented
         500:
           description: Internal Server Error
+  /v1/tina/job/findJobsOnDate:
+    get:
+      tags:
+        - Jobs
+      summary: Find Jobs 
+      description: Find Jobs in nth day 
+      parameters:
+        - name: days
+          in: query
+          required: true
+          type: number
+      responses:
+        200:
+          description: OK
+  /v1/tina/job/findJobsOnDateData:
+    get:
+      tags:
+        - Jobs
+      summary: Find Jobs 
+      description: Find Jobs in nth day 
+      parameters:
+        - name: days
+          in: query
+          required: true
+          type: number
+      responses:
+        200:
+          description: OK
+  /v1/tina/log/fetchLogs:
+    put:
+      tags:
+        - Logs
+      sumamry: Adding Logs
+      description: Adding Logs to the Database at several Intervals (Severity 3)
+      parameters:
+        - name: authToken
+          type: string
+          requried: true
+          in: query
+      responses:  
+        200:
+          description: OK
 
   /v1/tina/schedule/fetchTina:
     put:
@@ -142,16 +184,11 @@ paths:
         200:
           description: OK
   /v1/tina/log/deleteLogs:
-    put:  
+    delete:  
       tags:
-        - logs
+        - Logs
       summary: Delete All Logs
       description: Deleting all the Logs from out DB
-      parameters:
-        - in: query
-          type: string
-          name: authToken
-          required: true
       responses:
         200:
           description: OK

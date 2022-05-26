@@ -40,11 +40,11 @@ const Logs = new Schema(
       type: Number,
       required: true,
     },
-    timeStamp:
-    {
-      type: Date,
-      required: true
-    },
+    // timeStamp:
+    // {
+    //   type: Date,
+    //   required: true
+    // },
     userName: {
       type: String,
       required: true,

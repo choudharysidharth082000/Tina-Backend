@@ -143,26 +143,18 @@ const findJobRan = async (req, res) => {
     //type of the find shcedule --> wether it is for day, week or month
     const arrayString = findSchedule.name.split(" ");
 
-    
-    if(arrayString[0] === "Daily")
-    {
+    if (arrayString[0] === "Daily") {
       const timeStamp = moment(findSchedule.timeStamp);
-      while(true)
-      {
-        const newDate = moment(timeStamp).add(1,'days');
-        var i=0;
-        const momentSearchDate = moment(newDate + '' + findSchedule.ruleList[0].times[i]);
+      while (true) {
+        const newDate = moment(timeStamp).add(1, "days");
+        var i = 0;
+        const momentSearchDate = moment(
+          newDate + "" + findSchedule.ruleList[0].times[i]
+        );
         console.log(momentSearchDate);
       }
-
-    }
-    else if(arrayString[0] === "Monthly")
-    {
-
-    }
-    else 
-    {
-
+    } else if (arrayString[0] === "Monthly") {
+    } else {
     }
 
     const scheduleTimeStamp = findSchedule.timeStamp;
@@ -188,7 +180,92 @@ const findJobRan = async (req, res) => {
     });
   }
 };
-
+//finding the jobs between particular date
+const findJobsOnDate = async (req, res) => {
+  try {
+    const { days } = req.query;
+    console.log(days);
+    today = new Date();
+    const momentDate = moment(today).subtract(days, "days");
+    const findJobs = await Job.count({
+      submittedDate: {
+        $gte: momentDate,
+        $lt: today,
+      },
+    });
+    const successFullJobs = await Job.count({
+      submittedDate: {
+        $gte: momentDate,
+        $lt: today,
+      },
+      status: "17",
+    });
+    const unsuccessfulJobs = await Job.count({
+      submittedDate: {
+        $gte: momentDate,
+        $lt: today,
+      },
+      status: "15",
+    });
+    res.status(200).json({
+      status: true,
+      message: "Found Some Data",
+      TotalJobs: findJobs,
+      successFullJobs: successFullJobs,
+      unsuccessfulJobs: unsuccessfulJobs,
+    });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({
+      status: false,
+      message: "Something Went wrong",
+      error: error.message,
+    });
+  }
+};
+//finding the jobs between particular date
+const findJobsOnDateData = async (req, res) => {
+  try {
+    const { days } = req.query;
+    console.log(days);
+    today = new Date();
+    const momentDate = moment(today).subtract(days, "days");
+    const findJobs = await Job.count({
+      submittedDate: {
+        $gte: momentDate,
+        $lt: today,
+      },
+    });
+    const successFullJobs = await Job.find({
+      submittedDate: {
+        $gte: momentDate,
+        $lt: today,
+      },
+      status: "17",
+    });
+    const unsuccessfulJobs = await Job.find({
+      submittedDate: {
+        $gte: momentDate,
+        $lt: today,
+      },
+      status: "15",
+    });
+    res.status(200).json({
+      status: true,
+      message: "Found Some Data",
+      TotalJobs: findJobs,
+      successFullJobs: successFullJobs,
+      unsuccessfulJobs: unsuccessfulJobs,
+    });
+  } catch (error) {
+    console.log(error.message);
+    res.status(500).json({
+      status: false,
+      message: "Something Went wrong",
+      error: error.message,
+    });
+  }
+};
 
 module.exports = {
   fetchAllJobs,
@@ -196,4 +273,6 @@ module.exports = {
   deleteAllJobs,
   fetchJobType,
   findJobRan,
+  findJobsOnDate,
+  findJobsOnDateData
 };

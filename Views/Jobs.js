@@ -5,7 +5,9 @@ const {
   findStatusJobs,
   deleteAllJobs,
   fetchJobType,
-  findJobRan
+  findJobRan,
+  findJobsOnDate,
+  findJobsOnDateData
 } = require("../Controllers/Jobs");
 const multer = require("multer");
 
@@ -18,5 +20,9 @@ router.put("/fetchJobType/:jobType", fetchJobType);
 router.delete("/deleteAllJobs", deleteAllJobs);
 //finding all the job which ran successfully
 router.put("/findJobRan/:scheduleID", findJobRan);
+//finding all the jobs completd on nth day
+router.get("/findJobsOnDate" ,findJobsOnDate)
+//finding all the jobs completed data on the nth Day
+router.get("/findJobsOnDateData", findJobsOnDateData);
 
 module.exports = router;
