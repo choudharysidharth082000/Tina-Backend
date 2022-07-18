@@ -33,6 +33,42 @@ paths:
           description: Undocumented
         500:
           description: Internal Server Error
+  /v1/tina/agents/findAgent:
+    get:
+      tags:
+        - Agents
+      summary: Find Agents
+      description: lorem ipsum
+      responses:
+        200:
+          description: OK
+  /v1/tina/agents/findCount:
+    get:
+      tags:
+        - Agents
+      summary: Find Agents
+      description: lorem ipsum
+      responses:
+        200:
+          description: OK
+  /v1/tina/agents/getAgent:
+    get:
+      tags:
+        - Agents
+      summary: Find Agents
+      description: lorem ipsum
+      responses:
+        200:
+          description: OK
+  /v1/tina/agents/findCountAll:
+    get:
+      tags:
+        - Agents
+      summary: Find Agents
+      description: lorem ipsum
+      responses:
+        200:
+          description: OK
   /v1/tina/job/findJobsOnDate:
     get:
       tags:

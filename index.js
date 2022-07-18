@@ -7,6 +7,7 @@ const express = require("express");
 const app = express();
 const dotenv = require("dotenv");
 const axios = require("axios");
+var LocalStorage = require('node-localstorage').LocalStorage;
 dotenv.config();
 
 // files imported Here
@@ -14,6 +15,8 @@ const testApi = require("./Views/testApi");
 const importJobs = require("./Views/TinaMain");
 const jobs = require("./Views/Jobs");
 const logs = require("./Views/Logs");
+const agents = require("./Views/Agents");
+const auth = require("./Views/Auth")
 
 //cors configurations
 app.use(cors());
@@ -23,6 +26,9 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 // parse application/json
 app.use(bodyParser.json());
+
+//localstoage
+localStorage = new LocalStorage('./scratch');
 
 //swwagger config
 const swaggerUI = require("swagger-ui-express");
@@ -48,6 +54,8 @@ app.use("/v1/", testApi);
 app.use("/v1/tina/schedule/", importJobs);
 app.use("/v1/tina/job/", jobs);
 app.use("/v1/tina/log/", logs);
+app.use("/v1/tina/agents/", agents);
+app.use("/v1/tina/auth/", auth);
 
 const port = process.env.PORT;
 //starting server

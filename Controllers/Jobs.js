@@ -266,6 +266,35 @@ const findJobsOnDateData = async (req, res) => {
     });
   }
 };
+//finding the jobs with the specific controllers
+const findLogs = async (req, res)=>{
+  try {
+    const findLogs =  await Job.aggregate([
+      {
+        '$lookup': {
+          'from': 'logs', 
+          'localField': 'presentationId', 
+          'foreignField': 'jobId', 
+          'as': 'results'
+        }
+      }
+    ])
+    res.status(200).json({
+      status: true,
+      message: "Data Found",
+      data: findLogs
+    })
+    
+  } catch (error) {
+    
+    console.log(error);
+    res.status(500).json({
+      status: false,
+      message: 'Something Went Wrong',
+      error: error.message
+    })
+  }
+}
 
 module.exports = {
   fetchAllJobs,
@@ -274,5 +303,6 @@ module.exports = {
   fetchJobType,
   findJobRan,
   findJobsOnDate,
-  findJobsOnDateData
+  findJobsOnDateData,
+  findLogs
 };
