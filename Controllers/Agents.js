@@ -1,13 +1,17 @@
 const axios = require("axios");
 const https = require("https");
 const { Agent } = require("../Models/Agents");
+const {checkUser} = require("../middlewares/loginCheck")
 const findAgents = async (req, res, next) => {
   try {
+    console.log(localStorage.getItem("catalogID"));
+    const check = await checkUser(localStorage.getItem("catalogID"));
+    console.log("Check", check);
     const findAgents = await axios.get(
       `${process.env.API_URL}/agents?category=host`,
       {
         headers: {
-          Authorization: "Bearer 6ab6a502073bd1aa2678f457da8f27264f1a4a65",
+          Authorization: `Bearer ${check.data}`,
         },
         httpsAgent: new https.Agent({ rejectUnauthorized: false }),
       }
@@ -16,7 +20,7 @@ const findAgents = async (req, res, next) => {
       `${process.env.API_URL}/agents?category=application`,
       {
         headers: {
-          Authorization: "Bearer 6ab6a502073bd1aa2678f457da8f27264f1a4a65",
+          Authorization: `Bearer ${check.data}`,
         },
         httpsAgent: new https.Agent({ rejectUnauthorized: false }),
       }

@@ -1,7 +1,9 @@
-const axios = require("axios")
+const axios = require("axios");
 const https = require("https");
 var LocalStorage = require("node-localstorage").LocalStorage;
-localStorage = new LocalStorage('./scratch');
+//login model
+const { User } = require("../Models/Login");
+localStorage = new LocalStorage("./scratch");
 const login = async (req, res, next) => {
   const { user, password, catalog, server } = req.body;
   const finalObj = {
@@ -27,8 +29,37 @@ const login = async (req, res, next) => {
     } else {
       console.log(loginTina.data);
       localStorage.setItem("token", loginTina.data.token);
-      console.log(localStorage.getItem("token"));
-      res.send("Login success");
+      //cehckint the catalog
+      const newAxiosCOnfig = {
+        httpsAgent: new https.Agent({ rejectUnauthorized: false }),
+        headers: {
+          Authorization: `Bearer ${loginTina.data.token}`,
+        },
+      };
+      console.log(newAxiosCOnfig);
+      const checkCatalog = await axios.get(
+        `${process.env.API_URL}/current-catalog/info`,
+        newAxiosCOnfig
+      );
+      console.log(checkCatalog.data);
+      const loginObj = {
+        lang: "en",
+        user: user,
+        password: password,
+        connectReason: "adminAndSupervise",
+        catalog: catalog,
+        server: server,
+        catalogName: checkCatalog.data.catalogName,
+        catalogId: checkCatalog.data.catalogUUID,
+        Token: loginTina.data.token,
+      };
+      const postLogin = await new User(loginObj).save();
+      if (!postLogin) {
+        res.send("login Failed");
+      } else {
+        localStorage.setItem("catalogID", checkCatalog.data.catalogUUID);
+        res.send("login Success");
+      }
     }
   } catch (error) {
     console.log(error);
@@ -36,7 +67,6 @@ const login = async (req, res, next) => {
   next();
 };
 
-module.exports =
-{
-    login
-}
+module.exports = {
+  login,
+};
