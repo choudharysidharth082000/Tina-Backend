@@ -19,46 +19,72 @@ const login = async (req, res, next) => {
   };
   //login to third party organization
   try {
-    const loginTina = await axios.put(
-      `${process.env.API_URL}/users/authenticate`,
-      finalObj,
-      axiosConfig
-    );
-    if (!loginTina) {
-      res.send("Login failed");
-    } else {
-      console.log(loginTina.data);
-      localStorage.setItem("token", loginTina.data.token);
-      //cehckint the catalog
-      const newAxiosCOnfig = {
-        httpsAgent: new https.Agent({ rejectUnauthorized: false }),
-        headers: {
-          Authorization: `Bearer ${loginTina.data.token}`,
-        },
-      };
-      console.log(newAxiosCOnfig);
-      const checkCatalog = await axios.get(
-        `${process.env.API_URL}/current-catalog/info`,
-        newAxiosCOnfig
+    //checkig if the user is already present or not
+    const userExist = await User.findOne({ user: user });
+    if (user) {
+      const loginTina = await axios.put(
+        `${process.env.API_URL}/users/authenticate`,
+        finalObj,
+        axiosConfig
       );
-      console.log(checkCatalog.data);
-      const loginObj = {
-        lang: "en",
-        user: user,
-        password: password,
-        connectReason: "adminAndSupervise",
-        catalog: catalog,
-        server: server,
-        catalogName: checkCatalog.data.catalogName,
-        catalogId: checkCatalog.data.catalogUUID,
-        Token: loginTina.data.token,
-      };
-      const postLogin = await new User(loginObj).save();
-      if (!postLogin) {
-        res.send("login Failed");
+      if (!loginTina) {
+        res.send("Login failed");
       } else {
-        localStorage.setItem("catalogID", checkCatalog.data.catalogUUID);
-        res.send("login Success");
+        //update the token in the database
+        const updateToken = await User.updateOne(
+          { user: user },
+          {
+            Token: loginTina.data.token,
+          }
+        );
+        res.status(200).json({
+          status: true,
+          message: "Login Successful",
+          data: updateToken,
+        });
+      }
+    } else {
+      const loginTina = await axios.put(
+        `${process.env.API_URL}/users/authenticate`,
+        finalObj,
+        axiosConfig
+      );
+      if (!loginTina) {
+        res.send("Login failed");
+      } else {
+        console.log(loginTina.data);
+        localStorage.setItem("token", loginTina.data.token);
+        //cehckint the catalog
+        const newAxiosCOnfig = {
+          httpsAgent: new https.Agent({ rejectUnauthorized: false }),
+          headers: {
+            Authorization: `Bearer ${loginTina.data.token}`,
+          },
+        };
+        console.log(newAxiosCOnfig);
+        const checkCatalog = await axios.get(
+          `${process.env.API_URL}/current-catalog/info`,
+          newAxiosCOnfig
+        );
+        console.log(checkCatalog.data);
+        const loginObj = {
+          lang: "en",
+          user: user,
+          password: password,
+          connectReason: "adminAndSupervise",
+          catalog: catalog,
+          server: server,
+          catalogName: checkCatalog.data.catalogName,
+          catalogId: checkCatalog.data.catalogUUID,
+          Token: loginTina.data.token,
+        };
+        const postLogin = await new User(loginObj).save();
+        if (!postLogin) {
+          res.send("login Failed");
+        } else {
+          localStorage.setItem("catalogID", checkCatalog.data.catalogUUID);
+          res.send("login Success");
+        }
       }
     }
   } catch (error) {

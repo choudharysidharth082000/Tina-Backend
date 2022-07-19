@@ -73,8 +73,8 @@ paths:
     get:
       tags:
         - Jobs
-      summary: Find Jobs 
-      description: Find Jobs in nth day 
+      summary: Find Jobs
+      description: Find Jobs in nth day
       parameters:
         - name: days
           in: query
@@ -87,8 +87,8 @@ paths:
     get:
       tags:
         - Jobs
-      summary: Find Jobs 
-      description: Find Jobs in nth day 
+      summary: Find Jobs
+      description: Find Jobs in nth day
       parameters:
         - name: days
           in: query
@@ -108,7 +108,7 @@ paths:
           type: string
           requried: true
           in: query
-      responses:  
+      responses:
         200:
           description: OK
 
@@ -200,8 +200,8 @@ paths:
           in: path
           type: string
           required: true
-          enum: ["Daily","Weekly","Monthly"]
-      responses:  
+          enum: ["Daily", "Weekly", "Monthly"]
+      responses:
         200:
           description: OK
   /v1/tina/job/fetchJobType/{jobType}:
@@ -219,8 +219,39 @@ paths:
       responses:
         200:
           description: OK
+  /v1/tina/auth/login:
+    put:
+      tags:
+        - Auth
+      summary: Login user
+      description: User Login System and Generate Token and update it to the Database
+      parameters:
+        - in: body
+          required: true
+          description: Provide the auth token generated in the tina swagger docs
+          name: authToken
+          schema:
+            type: object
+            properties:
+              language:
+                type: string
+                default: en
+              user:
+                type: string
+              password:
+                type: string
+              connectReason:
+                type: string
+                default: adminAndSupervise
+              catalog:
+                type: string
+              server:
+                type: string
+      responses:
+        200:
+          description: OK
   /v1/tina/log/deleteLogs:
-    delete:  
+    delete:
       tags:
         - Logs
       summary: Delete All Logs
@@ -228,5 +259,3 @@ paths:
       responses:
         200:
           description: OK
-        
-    

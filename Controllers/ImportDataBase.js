@@ -2,26 +2,28 @@ const express = require("express");
 const mongoose = require("mongoose");
 const axios = require("axios");
 const https = require("https");
+const { checkUser } = require("../middlewares/loginCheck");
 
 //importing the models
 const { Schedule } = require("../Models/Schedules");
 
 // process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 const importFromApi = async (req, res, next) => {
-  const { authToken } = req.body;
-  console.log(authToken);
-  const data = await axios.get(`${process.env.TINA_API_URL}/schedules`, {
-    headers: {
-      Authorization: authToken,
-    },
-    httpsAgent: new https.Agent({ rejectUnauthorized: false }),
-  });
-  if (!data) {
-    console.log("Throw new Error");
-  }
-
   try {
+    const check = await checkUser(localStorage.getItem("catalogID"));
+    const { authToken } = req.body;
+    console.log(authToken);
+    const data = await axios.get(`${process.env.API_URL}/schedules`, {
+      headers: {
+        Authorization:  `Bearer ${check.data}`,
+      },
+      httpsAgent: new https.Agent({ rejectUnauthorized: false }),
+    });
+    if (!data) {
+      console.log("Throw new Error");
+    }
     //deleting the previous values
+    console.log(data.data);
     const deleteAll = await Schedule.deleteMany();
     //adding all the values sto the database
     const addToDatabase = await Schedule.insertMany(data.data);

@@ -29,7 +29,6 @@ const Schedules = new Schema(
     timeStamp:
     {
       type: Date,
-      required: true
     }
   },
   { timestamps: true }
