@@ -2,14 +2,24 @@ const { Log } = require("../Models/Logs");
 const axios = require("axios");
 const https = require("https");
 const moment = require("moment");
+const { checkUser } = require("../middlewares/loginCheck");
 const addLogs = async (req, res) => {
   try {
-    const { authToken } = req.query;
+    const catalagID = localStorage.getItem("catalagID");
+    if(!catalagID){
+      return res.status(404).json(
+        {
+          status: false,
+          message: "Please Login To Continue..."
+        }
+      )
+    }
+    const check = await checkUser(catalagID);
     //fetching the data from the api
     const fetchData = await axios.get(
       `${process.env.TINA_API_URL}/logs?nbMax=-1`,
       {
-        headers: { Authorization: authToken },
+        headers: { Authorization: `Bearer ${check.data}` },
         httpsAgent: new https.Agent({ rejectUnauthorized: false }),
       }
     );

@@ -4,7 +4,14 @@ const { Agent } = require("../Models/Agents");
 const { checkUser } = require("../middlewares/loginCheck");
 const findAgents = async (req, res, next) => {
   try {
-    const check = await checkUser(localStorage.getItem("catalogID"));
+    const catalagID = localStorage.getItem("catalagID");
+    if (!catalagID) {
+      return res.status(404).json({
+        status: false,
+        message: "Please Login To Continue...",
+      });
+    }
+    const check = await checkUser(catalagID);
     console.log("Check", check);
     const findAgents = await axios.get(
       `${process.env.API_URL}/agents?category=host`,

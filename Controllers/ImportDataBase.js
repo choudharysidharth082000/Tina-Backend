@@ -10,12 +10,17 @@ const { Schedule } = require("../Models/Schedules");
 // process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 const importFromApi = async (req, res, next) => {
   try {
-    const check = await checkUser(localStorage.getItem("catalogID"));
-    const { authToken } = req.body;
-    console.log(authToken);
+    const catalagID = localStorage.getItem("catalagID");
+    if (!catalagID) {
+      return res.status(404).json({
+        status: false,
+        message: "Please Login To Continue...",
+      });
+    }
+    const check = await checkUser(catalagID);
     const data = await axios.get(`${process.env.API_URL}/schedules`, {
       headers: {
-        Authorization:  `Bearer ${check.data}`,
+        Authorization: `Bearer ${check.data}`,
       },
       httpsAgent: new https.Agent({ rejectUnauthorized: false }),
     });
@@ -66,8 +71,16 @@ const deletAllSchedules = async (req, res, next) => {
 //addint teh schedule to our database
 const testAddSchedule = async (req, res) => {
   try {
-    const authToken = req.headers["authorization"];
-    console.log(authToken);
+    const catalagID = localStorage.getItem("catalagID");
+    if(!catalagID){
+      return res.status(404).json(
+        {
+          status: false,
+          message: "Please Login To Continue..."
+        }
+      )
+    }
+    const check = await checkUser(catalagID);
     const { schedRuleList, name, comment, description } = req.body;
     const finalObj = {
       schedRuleList: schedRuleList,
@@ -81,7 +94,7 @@ const testAddSchedule = async (req, res) => {
       finalObj,
       {
         headers: {
-          Authorization: authToken,
+          Authorization: `Bearer ${check.data}`,
         },
         httpsAgent: new https.Agent({ rejectUnauthorized: false }),
       }
@@ -92,7 +105,7 @@ const testAddSchedule = async (req, res) => {
       `${process.env.TINA_API_URL}/schedules/${postTina.data.publicId}`,
       {
         headers: {
-          Authorization: authToken,
+          Authorization: `Bearer ${check.data}`,
         },
         httpsAgent: new https.Agent({ rejectUnauthorized: false }),
       }

@@ -3,12 +3,22 @@ const https = require("https");
 const { Job } = require("../Models/Job");
 const { Schedule } = require("../Models/Schedules");
 const moment = require("moment");
+const { checkUser } = require("../middlewares/loginCheck");
 const fetchAllJobs = async (req, res, next) => {
-  const { authToken } = req.body;
   try {
+    const catalagID = localStorage.getItem("catalagID");
+    if(!catalagID){
+      return res.status(404).json(
+        {
+          status: false,
+          message: "Please Login To Continue..."
+        }
+      )
+    }
+    const check = await checkUser(catalagID);
     const fetchJobs = await axios.get(`${process.env.TINA_API_URL}/jobs`, {
       headers: {
-        Authorization: authToken,
+        Authorization: `Bearer ${check.data}`,
       },
       httpsAgent: new https.Agent({ rejectUnauthorized: false }),
     });
