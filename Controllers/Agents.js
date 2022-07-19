@@ -71,7 +71,16 @@ const getData = async (req, res, next) => {
 //external function
 const getCountAll = async (req, res, next) => {
   try {
-    const check = await checkUser(localStorage.getItem("catalogID"));
+    const catalagID = localStorage.getItem("catalagID");
+    if(!catalagID){
+      return res.status(404).json(
+        {
+          status: false,
+          message: "Please Login To Continue..."
+        }
+      )
+    }
+    const check = await checkUser(catalagID);
     const countAgent = await Agent.count();
     const countHost = await axios.get(
       `${process.env.API_URL}/agents?category=host`,

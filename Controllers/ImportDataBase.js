@@ -11,7 +11,7 @@ const { Schedule } = require("../Models/Schedules");
 const importFromApi = async (req, res, next) => {
   try {
     const catalagID = localStorage.getItem("catalagID");
-    if (!catalagID) {
+    if (catalagID === undefined) {
       return res.status(404).json({
         status: false,
         message: "Please Login To Continue...",

@@ -16,7 +16,8 @@ const fetchAllJobs = async (req, res, next) => {
       )
     }
     const check = await checkUser(catalagID);
-    const fetchJobs = await axios.get(`${process.env.TINA_API_URL}/jobs`, {
+    console.log(check);
+    const fetchJobs = await axios.get(`${process.env.API_URL}/jobs`, {
       headers: {
         Authorization: `Bearer ${check.data}`,
       },
@@ -55,7 +56,7 @@ const fetchAllJobs = async (req, res, next) => {
       });
     }
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
     res.status(500).json({
       status: false,
       message: "Something Went Wrong",

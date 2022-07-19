@@ -21,7 +21,9 @@ const login = async (req, res, next) => {
   try {
     //checkig if the user is already present or not
     const userExist = await User.findOne({ user: user });
-    if (user) {
+    if (userExist) {
+      //setting localstorage
+      localStorage.setItem("catalagID", userExist.catalogId);
       const loginTina = await axios.put(
         `${process.env.API_URL}/users/authenticate`,
         finalObj,
@@ -67,6 +69,9 @@ const login = async (req, res, next) => {
           newAxiosCOnfig
         );
         console.log(checkCatalog.data);
+        //setting the local storage for the catalog ID
+        localStorage.setItem("catalogID", checkCatalog.data.catalogUUID);
+        console.log("catalog Changed");
         const loginObj = {
           lang: "en",
           user: user,
