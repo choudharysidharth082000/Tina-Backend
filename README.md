@@ -1,5 +1,5 @@
 # Tina-Backend
-Tina backend where APIs are doeumnented through swaggerjs
+Tina backend where APIs are documented in swaggerjs
 
 ## Installation
 ```bash
